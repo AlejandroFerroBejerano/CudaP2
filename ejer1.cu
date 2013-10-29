@@ -10,10 +10,15 @@
 __global__ void 
 copiar(int *dev_a, int *dev_b)
 {
-  int position_x = blockIdx.x * blockDim.x + threadIdx.x + Columnas * threadIdx.y;
-  int position_y = blockDim.y * blockIdx.y * Columnas;
-	
-  dev_b[position_x + position_y] = dev_a[position_x + position_y];
+  int position_x = blockIdx.x * blockDim.x + threadIdx.x;
+  int position_y = blockDim.y * blockIdx.y + threadIdx.y;
+  int position = position_y * Columnas + position_x;
+
+  if (position_x >= Columnas || position_y >= Filas){
+    /*pass*/
+  }else{
+    dev_b[position] = dev_a[position];
+  }
 }
 
 int
