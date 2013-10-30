@@ -6,6 +6,10 @@
 
 #define Filas 5
 #define Columnas 7
+#define NbloquesX 3
+#define NbloquesY 3
+#define NhebrasX 3
+#define NhebrasY 2
 
 __global__ void 
 trasponer(int *dev_a, int *dev_b)
@@ -13,22 +17,24 @@ trasponer(int *dev_a, int *dev_b)
   int position_x = blockIdx.x * blockDim.x + threadIdx.x;
   int position_y = blockDim.y * blockIdx.y + threadIdx.y;
   int position = position_y * Columnas + position_x;
+  int position_traspuesta = position_x * Filas + position_y;
 
   if (position_x >= Columnas || position_y >= Filas){
-    /*pass*/
+    return;
   }else{
-    dev_b[position] = dev_a[(Filas * Columnas -1)-position];
+    dev_b[position_traspuesta] = dev_a[position];
   }
 }
+
 
 int
 main(int argc, char** argv)
 {
-  int a[Filas][Columnas], b[Filas][Columnas];
+  int a[Filas][Columnas], b[Columnas][Filas];
   int *dev_a, *dev_b;
   int i,j,pos=0;
-  dim3 nbloques(3,3);
-  dim3 nhebras(3,2);
+  dim3 nbloques(NbloquesX,NbloquesY);
+  dim3 nhebras(NhebrasX,NhebrasY);
 
   cudaMalloc((void**) &dev_a, Filas * Columnas * sizeof(int));
   cudaMalloc((void**) &dev_b, Filas * Columnas * sizeof(int));
@@ -45,11 +51,20 @@ main(int argc, char** argv)
   trasponer<<<nbloques, nhebras>>>(dev_a, dev_b);
 
   cudaMemcpy(b, dev_b, Filas * Columnas * sizeof(int), cudaMemcpyDeviceToHost);
-  pos=0;
-  for(i = 0; i < Filas; i++){
-    for (j = 0; j< Columnas; j++){
-    	printf("%d# %d -> %d \n",pos++, a[i][j], b[i][j]);
-    }
+
+   printf("\nMatriz Origen\n");
+  for (i=0; i< Filas; i++) {
+	for(j=0; j< Columnas; j++){
+	  printf("%d\t", a[i][j]);	
+	}
+    printf("\n");
+  }
+  printf("\nMatriz Destino\n");
+  for (i=0; i< Columnas; i++) {
+	for(j=0; j< Filas; j++){
+	  printf("%d\t", b[i][j]);	
+	}
+    printf("\n");
   }
 
   cudaFree(dev_a);
