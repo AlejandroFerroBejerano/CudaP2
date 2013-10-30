@@ -8,7 +8,7 @@
 #define Columnas 7
 
 __global__ void 
-copiar(int *dev_a, int *dev_b)
+copiar(int *dev_a, int* dev_b)
 {
   int position_x = blockIdx.x * blockDim.x + threadIdx.x;
   int position_y = blockDim.y * blockIdx.y + threadIdx.y;
@@ -19,6 +19,18 @@ copiar(int *dev_a, int *dev_b)
   }else{
     dev_b[position] = dev_a[position];
   }
+}
+
+
+void print_matriz(int resultado[Filas][Columnas]){
+  int i,j;
+    for (i=0; i< Filas; i++) {
+	for(j=0; j< Columnas; j++){
+	  printf("%d\t", resultado[i][j]);	
+	}
+     printf("\n");
+  }
+  printf("\n");
 }
 
 int
@@ -45,12 +57,11 @@ main(int argc, char** argv)
   copiar<<<nbloques, nhebras>>>(dev_a, dev_b);
 
   cudaMemcpy(b, dev_b, Filas * Columnas * sizeof(int), cudaMemcpyDeviceToHost);
-  pos = 0;
-  for(i = 0; i < Filas; i++){
-    for (j = 0; j< Columnas; j++){
-    	printf("%d# %d -> %d \n",pos++, a[i][j], b[i][j]);
-    }
-  }
+  
+  printf("\nMatriz Origen\n");
+  print_matriz(a);
+  printf("\nMatriz Destino\n");
+  print_matriz(b);
 
   cudaFree(dev_a);
   cudaFree(dev_b);
