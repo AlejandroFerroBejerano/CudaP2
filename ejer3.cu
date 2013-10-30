@@ -16,9 +16,11 @@ copiar(int *dev_a, int *dev_b)
 			
   for(blockx=0; blockx <= gridx; blockx++){
 		for(blocky=0; blocky <= gridy; blocky++){
+
 			position_x = blockx * blockDim.x + threadIdx.x;
   		position_y = blocky * blockDim.y + threadIdx.y;
 			position = position_y * Columnas + position_x;
+
 			if (position_x >= Columnas || position_y >= Filas){
     		continue;/*pass*/
   		}else{
