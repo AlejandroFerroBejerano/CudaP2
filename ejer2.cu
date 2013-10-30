@@ -17,12 +17,12 @@ trasponer(int *dev_a, int *dev_b)
   int position_x = blockIdx.x * blockDim.x + threadIdx.x;
   int position_y = blockDim.y * blockIdx.y + threadIdx.y;
   int position = position_y * Columnas + position_x;
-  int position_traspuesta = position_x * Filas + position_y;
+  int position_reverse = position_x * Filas + position_y;
 
   if (position_x >= Columnas || position_y >= Filas){
     return;
   }else{
-    dev_b[position_traspuesta] = dev_a[position];
+    dev_b[position_reverse] = dev_a[position];
   }
 }
 
