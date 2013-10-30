@@ -10,16 +10,25 @@
 __global__ void 
 copiar(int *dev_a, int *dev_b)
 {
-  int position_x = threadIdx.x;
-  int position_y = threadIdx.y + blockDim.x * blockDim.y * threadIdx.y;
-  int position = position_x + position_y;
-  int desp = 0;
-  int iter = (Columnas/blockDim.x + Columnas%blockDim.x) * (Filas/blockDim.y + Filas%blockDim.y);
+  int blockx, blocky, position_x,position_y, position, position_reverse;
+	int gridx = Columnas/blockDim.x + Columnas%blockDim.x;
+  int gridy = Filas/blockDim.y + Filas%blockDim.y;
+			
+  for(blockx=0; blockx <= gridx; blockx++){
+		for(blocky=0; blocky <= gridy; blocky++){
 
-  for(int i=0; i <= iter; i++){
-    desp= i * blockDim.x;
-    dev_b[position + desp] = dev_a[(Filas * Columnas -1) - (position + desp)];
-  }
+			position_x = blockx * blockDim.x + threadIdx.x;
+  		position_y = blocky * blockDim.y + threadIdx.y;
+			position = position_y * Columnas + position_x;
+      position_reverse = position_x * Filas + position_y;
+
+			if (position_x >= Columnas || position_y >= Filas){
+    		continue;/*pass*/
+  		}else{
+    		dev_b[position_reverse] = dev_a[position];
+  		}
+		}
+  }/*finfor*/
 }
 
 int
@@ -46,11 +55,19 @@ main(int argc, char** argv)
   copiar<<<nbloques, nhebras>>>(dev_a, dev_b);
 
   cudaMemcpy(b, dev_b, Filas * Columnas * sizeof(int), cudaMemcpyDeviceToHost);
-  pos = 0;
-  for(i = 0; i < Filas; i++){
-    for (j = 0; j< Columnas; j++){
-    	printf("%d# %d -> %d \n",pos++, a[i][j], b[i][j]);
-    }
+	printf("\nMatriz Origen\n");
+  for (i=0; i< Filas; i++) {
+		for(j=0; j< Columnas; j++){
+	  	printf("%d\t", a[i][j]);	
+		}
+    printf("\n");
+  }
+  printf("\nMatriz Destino\n");
+  for (i=0; i< Columnas; i++) {
+		for(j=0; j< Filas; j++){
+	  	printf("%d\t", b[i][j]);	
+		}
+    printf("\n");
   }
 
   cudaFree(dev_a);
