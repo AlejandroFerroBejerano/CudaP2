@@ -11,8 +11,8 @@ __global__ void
 copiar(int *dev_a, int *dev_b)
 {
 	int blockx, blocky, position_x,position_y, position;
-	int gridx = 3;
-  int gridy = 3;
+	int gridx = Columnas/blockDim.x + Columnas%blockDim.x;
+  int gridy = Filas/blockDim.y + Filas%blockDim.y;
 			
   for(blockx=0; blockx <= gridx; blockx++){
 		for(blocky=0; blocky <= gridy; blocky++){
