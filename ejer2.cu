@@ -52,14 +52,14 @@ main(int argc, char** argv)
 
   cudaMemcpy(b, dev_b, Filas * Columnas * sizeof(int), cudaMemcpyDeviceToHost);
 
-   printf("\nMatriz Origen\n");
+  printf("\nMatriz Origen\n");
   for (i=0; i< Filas; i++) {
 	for(j=0; j< Columnas; j++){
 	  printf("%d\t", a[i][j]);	
 	}
     printf("\n");
   }
-  printf("\nMatriz Destino\n");
+  printf("\nMatriz Traspuesta\n");
   for (i=0; i< Columnas; i++) {
 	for(j=0; j< Filas; j++){
 	  printf("%d\t", b[i][j]);	
