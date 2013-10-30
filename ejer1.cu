@@ -15,7 +15,7 @@ copiar(int *dev_a, int* dev_b)
   int position = position_y * Columnas + position_x;
 
   if (position_x >= Columnas || position_y >= Filas){
-    /*pass*/
+    return;/*pass*/
   }else{
     dev_b[position] = dev_a[position];
   }
