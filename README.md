@@ -30,3 +30,7 @@ threadIdx.y -> // Posición del thread dentro del bloque, respecto al eje y
 
 blockDim.x -> // Dimensión del bloque en el eje x
 blockDim.y -> // Dimensión del bloque en el eje y
+
+//Hace las funciones de blockIDx.x/y en el caso de un único bloque.
+blockX
+blockY
